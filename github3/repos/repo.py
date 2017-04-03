@@ -757,7 +757,8 @@ class Repository(GitHubCore):
 
     @requires_auth
     def create_deployment(self, ref, required_contexts=None, payload='',
-                          auto_merge=False, description='', environment=None):
+                          auto_merge=False, description='', environment=None,
+                          task=None):
         """Create a deployment.
 
         :param str ref: (required), The ref to deploy. This can be a branch,
@@ -772,6 +773,8 @@ class Repository(GitHubCore):
         :param str description: Optional short description. Default: ""
         :param str environment: Optional name for the target deployment
             environment (e.g., production, staging, qa). Default: "production"
+        :param str task: Optional parameter to specify a task to execute, e.g.
+            deploy or deploy:migrations. Default: "deploy"
         :returns: :class:`Deployment <github3.repos.deployment.Deployment>`
         """
         json = None
@@ -781,7 +784,8 @@ class Repository(GitHubCore):
             url = self._build_url('deployments', base_url=self._api)
             data = {'ref': ref, 'required_contexts': required_contexts,
                     'payload': payload, 'auto_merge': auto_merge,
-                    'description': description, 'environment': environment}
+                    'description': description, 'environment': environment,
+                    'task': task}
             self._remove_none(data)
             json = self._json(self._post(url, data=data),
                               201)
